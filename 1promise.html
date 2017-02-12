@@ -5,6 +5,47 @@
     <title>Promise</title>
 </head>
 <body>
+<h1>个人信息</h1>
+<div id="name">
 
+</div>
+
+<script src="../jquery.3.0.0.min.js"></script>
+<script>
+    "use strict";
+    var nameEle = document.getElementById("name");
+    var names = [], ages = [], citys = [];
+    
+    function getData(url) {
+        var promise = new Promise(function(resolve, reject) {
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function(data) {
+                    data = JSON.parse(data);
+                    if(data.status == 1)
+                        resolve(data);
+                    else
+                        reject(data.msg);
+                }
+            })
+        })
+        return promise;
+    }
+    getData("name").then((data) => {
+        names = data.names;
+        return getData("age");
+    }).then((data) => {
+        ages = data.ages;
+        return getData("city");
+    }).then((data) => {
+        citys = data.citys;
+        var str = "";
+        names.forEach(function(ele, index) {
+            str += `<h2>${names[index]}今年${ages[index]}岁住在${citys[index]}`;
+        })
+        nameEle.innerHTML = str;
+    })
+</script>
 </body>
 </html>
